@@ -77,6 +77,7 @@ public class Puzzle {
 						rowNode.setRowId(r);
 						columnNode.setDownNode(rowNode);
 						rowNode.setUpNode(columnNode);	
+						rowNode.setColumnNode(columnNode);
 						flag =false;
 	                   //set upRowNode					
 						upRowNode = rowNode;
@@ -86,6 +87,7 @@ public class Puzzle {
 						rowNode.setRowId(r);
 						upRowNode.setDownNode(rowNode);
 						rowNode.setUpNode(upRowNode);	
+						rowNode.setColumnNode(columnNode);
 						//update upRowNode
 						upRowNode = rowNode;
 						count++;
@@ -135,7 +137,16 @@ public class Puzzle {
  
 		}
 		
-		printNet(head);
+//		System.out.println("Print unchanged list: ");
+//		printNet(head);
+//		Node column = head.getRight();
+		Solver solver =  new Solver(head);
+		solver.printSolution();
+//		System.out.println("Print list after covering the first column: ");
+//		printNet(head);
+//		solver.uncover(column);
+//		System.out.println("Print list after uncovering the first column: ");
+//		printNet(head);
 		
 		
 	}

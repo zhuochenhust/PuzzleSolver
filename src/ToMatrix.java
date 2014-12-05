@@ -47,6 +47,7 @@ public class ToMatrix {
 				System.out.print(" " + matrix[i][j]);
 			}
 		}
+		System.out.println();
 	}
 
 }
