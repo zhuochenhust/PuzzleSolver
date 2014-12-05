@@ -4,11 +4,15 @@ public class Node {
 	Node rightNode;
 	Node upNode;
 	Node downNode;
+	int nodeNumber;
+	int columnId; 
+	int rowId;
 
 
 	
 //	Node columnNode
-	public Node(){
+	public Node(int id){
+		this.columnId = id;
 			
 	}
 	public Node(Node leftNode, Node rightNode, Node upNode, Node downNode){
@@ -44,6 +48,26 @@ public class Node {
 	public Node getDown(){
 	    return this.downNode;
 	}
+	
+	public void setRowId(int rowId){
+		this.rowId = rowId;
+	}
+	public void setColumnId(int columnId){
+		this.columnId = columnId;
+	}
+	public int getRowId(){
+		return this.rowId;
+	}
+	public int getColumnId(){
+		return this.columnId;
+	}
+
+	public void setNodeNumber(int nodeNumber){
+		this.nodeNumber = nodeNumber;
+	}
+    public int getNodeNumber(){
+    	return this.nodeNumber;
+    } 
 
 	
 }
