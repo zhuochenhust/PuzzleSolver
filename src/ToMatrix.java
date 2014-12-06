@@ -6,9 +6,9 @@ public class ToMatrix {
 	int columnNumber = 0;
 	int matrixRowNumber =0;
 	int matrixColumnNumber = 0;
-	public ToMatrix(PuzzleBoard board, Tile[] tiles){
+	public ToMatrix(PuzzleBoard board, Tile[] tiles, int tileNumber){
 		ArrayList<boolean[]> rawMatrix = new ArrayList<boolean[]>();
-		this.columnNumber = board.size() + tiles.length;
+		this.columnNumber = board.size() + tileNumber;
 		boolean[] row = new boolean[this.columnNumber];
 		
 		for(int k=0; k < tiles.length; k++){
@@ -16,7 +16,7 @@ public class ToMatrix {
 				for(int c=0; c < board.width(); c++){
 					//put tile on the board and test whether it is legal or not.
 					if(board.putPiece(tiles[k],r,c)){
-						row = board.getRow(tiles.length, tiles[k].id);
+						row = board.getRow(tileNumber, tiles[k].id);
 						rawMatrix.add(row);
 						this.rowNumber ++;					
 					}

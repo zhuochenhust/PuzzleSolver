@@ -7,6 +7,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Puzzle {
+	
+	public static final int DEGREE90 = 90;
+	public static final int DEGREE180 = 180;
+	public static final int DEGREE270 = 270;
+	
+	public static final int RlectionOnX = 1;
+	public static final int RlectionOnY = 0;
+	
 	private PuzzleBoard board;
 	private Tile[] tiles;
 	public void parse(String path) throws IOException {
@@ -37,13 +45,44 @@ public class Puzzle {
 		tilesList.remove(toTiles.getMaxTile());
 		//add it as board
 		board = new PuzzleBoard(0, toTiles.getMaxTile());
-		tiles = new Tile[tilesList.size()];	
-		for(int i=0; i < tilesList.size(); i++){
+		
+		// Add Rotated Tiles:
+		ArrayList<Tile> rotatedTileList = new ArrayList<Tile>();
+		int tileNumber = tilesList.size();
+		for(int i=0; i < tileNumber; i++){
+			// Standize tiles in the list and set id
 			tilesList.get(i).standize();
 			tilesList.get(i).setId(i);
-			tiles[i] = tilesList.get(i);
+			
+			rotatedTileList.add(tilesList.get(i));
+			
+		// Enable Rotation	
+			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE90))){
+				rotatedTileList.add(tilesList.get(i).rotateTile(90));
+			}
+			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE180))){
+				rotatedTileList.add(tilesList. get(i).rotateTile(180));
+			}
+			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE270))){
+				rotatedTileList.add(tilesList.get(i).rotateTile(270));
+			}
+		 // Enable Reflection
+			
+			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnX))){
+				rotatedTileList.add(tilesList.get(i).reflectTile(RlectionOnX));
+			}
+			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnY))){
+				rotatedTileList.add(tilesList.get(i).reflectTile(RlectionOnY));
+			}
+			
 		}
 		
+		tiles = new Tile[rotatedTileList.size()];	
+		for(int i=0; i < rotatedTileList.size(); i++){			
+			tiles[i] = rotatedTileList.get(i);
+		}
+		
+		System.out.println("Tile Number:" + rotatedTileList.size());
 		// tiles[0].printTile();
 		
 		
@@ -52,7 +91,7 @@ public class Puzzle {
 //		Node leftColumnNode;
 //		Node rightColumnNode;
 		Node lastColumnNode = new Node(-1);
-		ToMatrix mat = new ToMatrix(board, tiles);
+		ToMatrix mat = new ToMatrix(board, tiles, tileNumber);
 		for(int c = 0; c < mat.matrixColumnNumber; c++){
 			Node columnNode = new Node(c);
 			columnNode.setRowId(-1);
@@ -96,10 +135,10 @@ public class Puzzle {
 			     }		
 		     }
 			 columnNode.setNodeNumber(count);	
-			 System.out.println("Count: " + count);
+			 //System.out.println("Count: " + count);
 		}
 		
-		mat.printMatrix();
+		//mat.printMatrix();
 		int leftRowNumber = 0;
 		int leftColumnNumber = 0;
 		int rightRowNumber = 0;

@@ -1,10 +1,21 @@
 
 import java.util.HashSet;
+import java.util.ArrayList;
 
 public class Tile {
 	public static final char BLANK = ' ';
+	
+	public static final int DEGREE90 = 90;
+	public static final int DEGREE180 = 180;
+	public static final int DEGREE270 = 270;
+	
+	public static final int RlectionOnX = 1;
+	public static final int RlectionOnY = 0;
+	
 	protected int id = -1;
 	protected HashSet<Cell> cells = new HashSet<Cell>();
+	
+	protected ArrayList<Cell> arrayCells = new  ArrayList<Cell>();
 
 	protected int left = 0;
 	protected int top = 0;
@@ -94,11 +105,27 @@ public class Tile {
 //		}
 //		return sb.toString();
 //	}
-
-	public int compareTo (Tile o) {
-		if (o == null)
+	public int compareTo(Tile tile) {
+		if (tile == null)
 			return 1;
-		return this.cells.size() - o.cells.size();
+		return this.cells.size() - tile.cells.size();
+	}
+	
+	public boolean equals(Tile tile) {
+		if (tile == null)
+			return false;
+		int count =0;
+		for(Cell c : tile.cells){
+			for(Cell otherC: this.cells){
+				if(c.equals(otherC)){
+					count++;
+				}		
+			}
+		}
+		if(count == tile.cells.size()){
+			return true;
+		}
+		return false;
 	}
 	
 
@@ -113,5 +140,64 @@ public class Tile {
     		c.x = c.x - getLeft();
     		c.y = c.y - getTop();
     	}	
+    	// get ArrayList Points
+    	this.getArrayListCells();
+    }
+    
+    public Tile rotateTile( int degree){
+    	Tile rotatedTile = new Tile(); 
+    	
+    	switch (degree) {
+    		case DEGREE90: 
+    			for(Cell cell: this.cells){
+        		rotatedTile.addPoint(-cell.y, cell.x, cell.c);
+        	}
+    			break;
+    		case DEGREE180:
+    			for(Cell cell: this.cells){
+            		rotatedTile.addPoint(-cell.x, -cell.y, cell.c);
+            	}
+    			break;
+    		case DEGREE270:
+    			for(Cell cell: this.cells){
+            		rotatedTile.addPoint(cell.y, -cell.x, cell.c);
+            	}
+    			break;
+    		default: 
+    			System.out.println("Illegal Degree Parameter!!");    			
+    	}
+    	 	
+    	rotatedTile.standize();
+    	rotatedTile.setId(this.id);
+    	return rotatedTile;
+    }
+    
+    public Tile reflectTile( int direction){
+    	Tile rotatedTile = new Tile(); 
+    	
+    	switch (direction) {
+    		case RlectionOnX: 
+    			for(Cell cell: this.cells){
+        		rotatedTile.addPoint(cell.x, -cell.y, cell.c);
+        	}
+    			break;
+    		case RlectionOnY:
+    			for(Cell cell: this.cells){
+            		rotatedTile.addPoint(-cell.x, cell.y, cell.c);
+            	}
+    			break;
+    		default: 
+    			System.out.println("Illegal Rlection Parameter!!");    			
+    	}
+    	 	
+    	rotatedTile.standize();
+    	rotatedTile.setId(this.id);
+    	return rotatedTile;
+    }
+    
+    public void getArrayListCells(){
+		for(Cell cell: this.cells){
+    		arrayCells.add(cell);
+    	}
     }
 }

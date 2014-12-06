@@ -86,5 +86,9 @@ public class PuzzleBoard extends Tile {
 	public int height() {
 		return height;
 	}
+	
+	public int size(){
+		return this.size;
+	}
 
 }
