@@ -44,7 +44,7 @@ public class ToMatrix {
 		for (int i=0; i< matrixRowNumber ; i++){
 			System.out.println("");
 			for (int j=0; j < matrixColumnNumber;j++){
-				System.out.print(" " + matrix[i][j]);
+				System.out.print(" " + (matrix[i][j]?1:0));
 			}
 		}
 		System.out.println();

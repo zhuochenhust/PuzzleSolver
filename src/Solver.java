@@ -2,27 +2,34 @@ import java.util.ArrayList;
 
 public class Solver {
     Node head;
-    ArrayList<Node> solution = new ArrayList<Node>();
     ArrayList<ArrayList<Node>> solutions = new ArrayList<ArrayList<Node>>();
 	public Solver(Node head){
 		this.head = head;
 		this.solvePuzzle();
 	}
 	
+	
 	public void solvePuzzle(){
-	    this.search(0);
+	    ArrayList<Node> solution = new ArrayList<Node>();
+	    this.search(0, solution);
 		
 		//test cover
 //		Node columnNode = head.getRight();
 //		cover(columnNode);
 	}
 	
-	public void search(int k){
+	public void search(int k, ArrayList<Node> solution){
 		boolean flag = true;
 		Node columnNode = new Node(-1);
 		if(head.getRight() == null){
-			printSolution();
-			solutions.add(solution);
+			// firstly add solution and then output it
+			// Deeply copy solution and add it to solution list.
+		    ArrayList<Node> anotherSolution = new ArrayList<Node>();
+		    for(int i=0; i< solution.size(); i++){
+		    	anotherSolution.add(solution.get(i));
+		    }
+			solutions.add(anotherSolution);
+		    //printSolution();
 			return;
 		} else { 
 			 if(flag){
@@ -31,28 +38,37 @@ public class Solver {
 			  } else {
 				  columnNode = columnNode.getRight();   
 			  } 
-			 if (columnNode == null){
-					printSolution();
+			 if (columnNode == null){	
+				    ArrayList<Node> oneSolution = new ArrayList<Node>();
+				    for(int i=0; i< solution.size(); i++){
+				    	oneSolution.add(solution.get(i));
+				    }
+					solutions.add(oneSolution);
+					//printSolution();
 					return;
 			 }
-			  cover(columnNode);  	 
+//			  cover(columnNode);  	 
 
 		     for( Node rowNode = columnNode.getDown() ; rowNode != null ; rowNode = rowNode.getDown() ) { 
 		           	solution.add( rowNode ); 
+		           	System.out.println("Before Cover: ");
+		           	printNet(head);
+		           	cover(rowNode.getColumnNode()); 
+		           	System.out.println("After Cover: ");
+		           	printNet(head);
 
-		           	for( Node rightNode = rowNode.getRight() ; rightNode != null ; rightNode = rightNode.getRight() ) 
-		                	cover( rightNode.getColumnNode() ); 
-
-		           	this.search( k+1); 
+//		           	for( Node rightNode = rowNode.getRight() ; rightNode != null ; rightNode = rightNode.getRight() ) 
+//		                	cover( rightNode.getColumnNode() ); 
+ 		           	this.search( k+1, solution); 
 
 		           solution.remove( rowNode ); 
 		           columnNode = rowNode.getColumnNode(); 
-
-		          	for( Node leftNode = rowNode.getLeft() ; leftNode != null ; leftNode = leftNode.getLeft() ) 
-		               	uncover( leftNode.getColumnNode() ); 
+		           uncover( columnNode ); 
+//		          	for( Node leftNode = rowNode.getLeft() ; leftNode != null ; leftNode = leftNode.getLeft() ) 
+//		               	uncover( leftNode.getColumnNode() ); 
 		      } 
 
-		     uncover( columnNode ); 
+		     
 		}
 	}
 	public void cover(Node columnNode){
@@ -63,43 +79,158 @@ public class Solver {
 		if(columnNode.getLeft() != null){
 		   columnNode.getLeft().setRightNode( columnNode.getRight() ); 
 		}
-      try {
+//      try {
+		Node otherColumn;
 		for( Node row = columnNode.getDown() ; row != null ; row = row.getDown() ){ 
 		     	for( Node rightNode = row.getRight() ; rightNode != null ; rightNode = rightNode.getRight() ) { 
-		          	rightNode.getUp().setDownNode( rightNode.getDown() ); 
-		          	rightNode.getDown().setUpNode( rightNode.getUp() ); 
+		    		otherColumn = rightNode.getColumnNode();
+		    		if(otherColumn.getRight() != null){
+		    			otherColumn.getRight().setLeftNode( otherColumn.getLeft() ); 
+		    		}
+		    		if(otherColumn.getLeft() != null){
+		    			otherColumn.getLeft().setRightNode( otherColumn.getRight() ); 
+		    		}
+		    		coverRow(otherColumn);
+//		          	if(rightNode.getUp() != null){
+//		     		    rightNode.getUp().setDownNode( rightNode.getDown() ); 
+//		          	}
+//		          	if(rightNode.getDown() != null){
+//		          	   rightNode.getDown().setUpNode( rightNode.getUp() ); 
+//		          	}
+//		     		coverRow(rightNode)
 		     	} 
 		}	
-      }  catch ( Throwable error ) {
-         System.out.println("I found you!");
-      }
+//      }  catch ( Throwable error ) {
+//         System.out.println("I found you!");
+//      }
 	}
 	
 	public void uncover(Node columnNode){
-		
-		for( Node row = columnNode.getDown() ; row != null ; row = row.getDown() ) { 
-		     	for( Node leftNode = row.getRight() ; leftNode != null ; leftNode = leftNode.getRight() ) { 
-		          	if(leftNode.getUp() != null ){
-		     		leftNode.getUp().setDownNode( leftNode ); 
-		          	}
-		        	if(leftNode.getDown() != null ) {
-		     		leftNode.getDown().setUpNode( leftNode ); 
-		        	}
-		     	} 
 		if(columnNode.getRight() != null){
 		     columnNode.getRight().setLeftNode( columnNode ); 
 		}
 		if(columnNode.getLeft() != null){
 		columnNode.getLeft().setRightNode( columnNode ); 
-		}
+		
+		Node otherColumn;
+		for( Node row = columnNode.getDown() ; row != null ; row = row.getDown() ) { 
+		     	for( Node leftNode = row.getRight() ; leftNode != null ; leftNode = leftNode.getRight() ) { 
+		    		otherColumn = leftNode.getColumnNode();
+		    		if(otherColumn.getRight() != null){
+		    			otherColumn.getRight().setLeftNode( otherColumn ); 
+		    		}
+		    		if(otherColumn.getLeft() != null){
+		    			otherColumn.getLeft().setRightNode( otherColumn ); 
+		    		}
+		    		unCoverRow(otherColumn);
+
+		     	} 
+}
 		}
 
 	}
+	
+	
+	public void coverRow(Node columnNode){
+	Node rowNode = columnNode.getDown();
+	
+	while (rowNode != null ){
+		Node leftNode = rowNode.getLeft();
+		while(leftNode != null){
+          	if(leftNode.getUp() != null ){
+          		leftNode.getUp().setDownNode( leftNode.getDown() ); 
+          	}
+        	if(leftNode.getDown() != null ) {
+        		leftNode.getDown().setUpNode( leftNode.getUp() ); 
+        	}
+        	leftNode = leftNode.getLeft();
+		}
+		Node rightNode = rowNode.getRight();
+		while(rightNode != null){
+          	if(rightNode.getUp() != null ){
+          		rightNode.getUp().setDownNode( rightNode.getDown() ); 
+          	}
+        	if(rightNode.getDown() != null ) {
+        		rightNode.getDown().setUpNode( rightNode.getUp() ); 
+        	}
+        	rightNode = rightNode.getRight();
+		}
+		
+//      	if(rowNode.getUp() != null ){
+// 		rowNode.getUp().setDownNode( rowNode ); 
+//      	}
+//    	if(leftNode.getDown() != null ) {
+// 		rowNode.getDown().setUpNode( rowNode ); 
+//    	}
+    	rowNode = rowNode.getDown();
+	}    
+}
+	
+public void unCoverRow(Node columnNode){
+	Node rowNode = columnNode.getDown();
+	
+	while (rowNode != null ){
+		Node leftNode = rowNode;
+		while(leftNode.getLeft() != null){
+          	if(leftNode.getUp() != null ){
+     		leftNode.getUp().setDownNode( leftNode ); 
+          	}
+        	if(leftNode.getDown() != null ) {
+     		leftNode.getDown().setUpNode( leftNode ); 
+        	}
+		}
+		Node rightNode = rowNode;
+		while(rightNode.getRight() != null){
+          	if(rightNode.getUp() != null ){
+     		rightNode.getUp().setDownNode( rightNode ); 
+          	}
+        	if(rightNode.getDown() != null ) {
+     		rightNode.getDown().setUpNode( rightNode ); 
+        	}
+		}
+		
+//      	if(rowNode.getUp() != null ){
+// 		rowNode.getUp().setDownNode( rowNode ); 
+//      	}
+//    	if(leftNode.getDown() != null ) {
+// 		rowNode.getDown().setUpNode( rowNode ); 
+//    	}
+    	rowNode = rowNode.getDown();
+	}    
+}
+	
+	
 	public void printSolution(){
 		Node node;
-		for(int i=0; i < solution.size(); i++){
-			  node = solution.get(i);
+		System.out.println("Solution size: " + solutions.size());
+		for(int i=0; i < solutions.size(); i++){
+			System.out.println("Print out Solution " + (i+1) +" :");
+			for(int j = 0; j < solutions.get(i).size(); j++ ){
+			  node = solutions.get(0).get(j);
 			  System.out.println("ColumnId: " + node.columnId + "RowId: " + node.rowId);
+			}
+		}
+	}
+	
+	//test result to get the right connection among the row
+	public void printNet(Node head){
+		Node column = head.getRight();;
+		Node row;
+		while(column != null){
+		   row = column.getDown();
+		   while(row != null){
+			        Node temprow = row;
+					if (temprow.getLeft() == null){
+						int count =1;
+						while(temprow.getRight() != null ){
+							temprow = temprow.getRight();
+							count++;
+						}
+						System.out.println("Row Count:" + count);
+					}
+			      row = row.getDown();
+				}
+		   column = column.getRight();
 		}
 	}
 	

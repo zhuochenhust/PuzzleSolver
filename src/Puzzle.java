@@ -13,6 +13,7 @@ public class Puzzle {
 		parse(new FileInputStream(new File(path)));
 		
 	}
+
 	
 	public void parse(InputStream inStream) throws IOException {
 		ArrayList<char[]> fullInput = new ArrayList<char[]>();
