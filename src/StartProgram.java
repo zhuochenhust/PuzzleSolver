@@ -18,10 +18,11 @@ public class StartProgram {
 			//String path = root + "checkerboard.txt";
 			//String path = root + "test1.txt";
 			//String path = root + "test3.txt";
-			//String path = root + "test4.txt";
+			String path = root + "test4.txt";
 			//String path = root + "test2.txt";
 			//String path = root + "trivial.txt";
-			String path = root + "lucky13.txt";
+			//String path = root + "lucky13.txt";
+			//String path = root + "IQ_creator.txt";
 			System.out.println(path);
 		    try  {
 		    	p.parse(path);

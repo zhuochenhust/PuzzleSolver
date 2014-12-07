@@ -48,6 +48,9 @@ public class Puzzle {
 		
 		// Add Rotated Tiles:
 		ArrayList<Tile> rotatedTileList = new ArrayList<Tile>();
+		
+		// Rotated Tiles from one Tile
+		ArrayList<Tile> oneRotatedTileList = new ArrayList<Tile>();
 		int tileNumber = tilesList.size();
 		for(int i=0; i < tileNumber; i++){
 			// Standize tiles in the list and set id
@@ -58,20 +61,25 @@ public class Puzzle {
 			
 		// Enable Rotation	
 			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE90))){
-				rotatedTileList.add(tilesList.get(i).rotateTile(90));
+				rotatedTileList.add(tilesList.get(i).rotateTile(DEGREE90));
+			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE90));
 			}
 			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE180))){
-				rotatedTileList.add(tilesList. get(i).rotateTile(180));
+				rotatedTileList.add(tilesList. get(i).rotateTile(DEGREE180));
+			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE180));
 			}
 			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE270))){
-				rotatedTileList.add(tilesList.get(i).rotateTile(270));
+				rotatedTileList.add(tilesList.get(i).rotateTile(DEGREE270));
+			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE270));
 			}
 		 // Enable Reflection
 			
-			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnX))){
+			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnX)) 
+					&& ! this.contains(oneRotatedTileList, tilesList.get(i).reflectTile(RlectionOnX))){
 				rotatedTileList.add(tilesList.get(i).reflectTile(RlectionOnX));
 			}
-			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnY))){
+			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnY)) 
+					&& ! this.contains(oneRotatedTileList, tilesList.get(i).reflectTile(RlectionOnX))){
 				rotatedTileList.add(tilesList.get(i).reflectTile(RlectionOnY));
 			}
 			
@@ -91,7 +99,10 @@ public class Puzzle {
 //		Node leftColumnNode;
 //		Node rightColumnNode;
 		Node lastColumnNode = new Node(-1);
+		// get Matrix
 		ToMatrix mat = new ToMatrix(board, tiles, tileNumber);
+		
+		
 		for(int c = 0; c < mat.matrixColumnNumber; c++){
 			Node columnNode = new Node(c);
 			columnNode.setRowId(-1);
@@ -137,8 +148,9 @@ public class Puzzle {
 			 columnNode.setNodeNumber(count);	
 			 //System.out.println("Count: " + count);
 		}
-		
+		//Print out Matrix
 		//mat.printMatrix();
+		
 		int leftRowNumber = 0;
 		int leftColumnNumber = 0;
 		int rightRowNumber = 0;
@@ -262,5 +274,14 @@ public class Puzzle {
 		   column = column.getRight();
 		}
 	}
-
+	
+	public boolean contains(ArrayList<Tile> oneRotatedTileList, Tile rotatedTile){
+		for(Tile tile: oneRotatedTileList){
+			if(tile.equals(rotatedTile)){
+				return true;
+			}
+		}
+		return false;
+	}
+   
 }

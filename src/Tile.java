@@ -173,26 +173,26 @@ public class Tile {
     }
     
     public Tile reflectTile( int direction){
-    	Tile rotatedTile = new Tile(); 
+    	Tile reflectedTile = new Tile(); 
     	
     	switch (direction) {
     		case RlectionOnX: 
     			for(Cell cell: this.cells){
-        		rotatedTile.addPoint(cell.x, -cell.y, cell.c);
+    				reflectedTile.addPoint(cell.x, -cell.y, cell.c);
         	}
     			break;
     		case RlectionOnY:
     			for(Cell cell: this.cells){
-            		rotatedTile.addPoint(-cell.x, cell.y, cell.c);
+    				reflectedTile.addPoint(-cell.x, cell.y, cell.c);
             	}
     			break;
     		default: 
     			System.out.println("Illegal Rlection Parameter!!");    			
     	}
     	 	
-    	rotatedTile.standize();
-    	rotatedTile.setId(this.id);
-    	return rotatedTile;
+    	reflectedTile.standize();
+    	reflectedTile.setId(this.id);
+    	return reflectedTile;
     }
     
     public void getArrayListCells(){
