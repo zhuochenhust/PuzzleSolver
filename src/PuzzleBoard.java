@@ -14,9 +14,21 @@ public class PuzzleBoard extends Tile {
 		// Row would Y axis, column would be X axis
 		this.boardstatus = new boolean[tile.height()][tile.width()];
 		board = new Cell[tile.height()][tile.width()];
+		
+		// put cells from tile into array board
 		for (Cell c: tile.cells) {
 			board[c.getY()- tile.getTop()][c.getX() - tile.getLeft()] = c;		
 		}
+		
+		// put empty space with a empty blank in array board
+		for(int i=0; i < height; i++){
+			for(int j=0; j< width; j++){
+				if (board[i][j] ==null){
+					board[i][j] = new Cell(i, j , BLANK);
+				}
+			}
+		}
+		
 	}
 
 	public boolean putPiece(Tile tile, int row, int col) {
@@ -26,19 +38,30 @@ public class PuzzleBoard extends Tile {
 			if (!(this.checkColIndex(col  + c.x) && this.checkRowIndex(row + c.y))){
 				return false;
 			}
-
+          if(checkBoundary(c.y + row, c.x + col)){
+        	// print out the place where we put the cell
+        	 // System.out.println("New row:" +(c.y + row) + "New column: " + (c.x + col));
 			if( c.c != board[c.y + row][c.x + col].c){ // Char don't match, return false
 				return false;
 			} else if (boardstatus[c.y + row][c.x + col]){ // board has been occupied, return false
 			    return false;	
 			} else{                    
 				boardstatus[c.y + row][c.x + col] = true;
-			}      	
+			}  
+          }
 		}
 		
 		return true;
 	}
 
+	public boolean checkBoundary(int row, int column){
+		if(0 <= row && row < this.height && 0 <= column && column < this.width){
+			return true;
+		}
+		System.out.println("The index is out of boundary for board!");
+		return false;
+	}
+	
 	public boolean checkRowIndex(int row){
 		if ((row >= height) || (row < 0)){
 			//System.out.println("Illegal Row Number. Row should be height > row >=0");

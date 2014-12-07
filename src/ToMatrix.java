@@ -30,6 +30,7 @@ public class ToMatrix {
 		this.matrix = new boolean[matrixRowNumber][matrixColumnNumber]; 
 		for (int i=0; i< matrixRowNumber; i++){
 			for (int j=0; j < matrixColumnNumber;j++){
+				// assign value of one row to the matrix.
 				matrix[i][j] = rawMatrix.get(i)[j];
 			}
 		}

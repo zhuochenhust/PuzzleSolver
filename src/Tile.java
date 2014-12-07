@@ -70,28 +70,28 @@ public class Tile {
 				bottom = y;
 		}
 		cells.add(new Cell(x, y, ch));
-	}
+   }
 
-	private char[][] getData() {
-		char[][] data = new char[height()][width()];
-		for (int i = data.length; i-- > 0;)
-			for (int j = data[i].length; j-- > 0;)
-				data[i][j] = BLANK;
-		for (Cell p : cells) {
-			data[p.y - top][p.x - left] = p.c;
-		}
-		return data;
-	}
-
-	public void print() {
-		char[][] data = getData();
-		for (int i = 0; i < data.length; i++) {
-			for (int j = 0; j < data[i].length; j++) {
-				System.out.print(data[i][j]);
-			}
-			System.out.println();
-		}
-	}
+//	private char[][] getData() {
+//		char[][] data = new char[height()][width()];
+//		for (int i = data.length; i-- > 0;)
+//			for (int j = data[i].length; j-- > 0;)
+//				data[i][j] = BLANK;
+//		for (Cell p : cells) {
+//			data[p.y - top][p.x - left] = p.c;
+//		}
+//		return data;
+//	}
+//
+//	public void print() {
+//		char[][] data = getData();
+//		for (int i = 0; i < data.length; i++) {
+//			for (int j = 0; j < data[i].length; j++) {
+//				System.out.print(data[i][j]);
+//			}
+//			System.out.println();
+//		}
+//	}
 
 //	@Override
 //	public String toString() {

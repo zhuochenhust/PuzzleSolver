@@ -21,8 +21,9 @@ public class StartProgram {
 			//String path = root + "test4.txt";
 			//String path = root + "test2.txt";
 			//String path = root + "trivial.txt";
-			String path = root + "lucky13.txt";
+			//String path = root + "lucky13.txt";
 			//String path = root + "IQ_creator.txt";
+			String path = root + "thirteen_holes.txt";
 			//String path = root + "test5.txt";
 			System.out.println(path);
 		    try  {
