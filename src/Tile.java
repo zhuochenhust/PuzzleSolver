@@ -200,4 +200,20 @@ public class Tile {
     		arrayCells.add(cell);
     	}
     }
+    
+    public Tile copy(){
+    	Tile copiedTile = new Tile();
+    	copiedTile.id = this.id;
+    	copiedTile.cells = this.cells;
+    	
+    	copiedTile.arrayCells = this.arrayCells;
+
+    	copiedTile.left = this.left;
+    	copiedTile.top = this.top;
+    	copiedTile.right = this.right;
+    	copiedTile.bottom = this.bottom;
+    	
+    	return copiedTile;
+    	
+    }
 }

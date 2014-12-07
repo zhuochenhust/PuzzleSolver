@@ -12,8 +12,11 @@ public class Puzzle {
 	public static final int DEGREE180 = 180;
 	public static final int DEGREE270 = 270;
 	
-	public static final int RlectionOnX = 1;
-	public static final int RlectionOnY = 0;
+	public static final int ReflectionOnX = 1;
+	public static final int ReflectionOnY = 0;
+	
+	public static final int[] ROTATION = {DEGREE90, DEGREE180, DEGREE270};
+	public static final int[] REFLECTION = {ReflectionOnX, ReflectionOnY};
 	
 	private PuzzleBoard board;
 	private Tile[] tiles;
@@ -46,51 +49,107 @@ public class Puzzle {
 		//add it as board
 		board = new PuzzleBoard(0, toTiles.getMaxTile());
 		
-		// Add Rotated Tiles:
-		ArrayList<Tile> rotatedTileList = new ArrayList<Tile>();
 		
 		// Rotated Tiles from one Tile
-		ArrayList<Tile> oneRotatedTileList = new ArrayList<Tile>();
+		ArrayList<Tile> transformedTileList = new ArrayList<Tile>();
+		ArrayList<Tile> uniqueTransformedTileList = new ArrayList<Tile>();
+		ArrayList<Tile> AllTransformedTileList = new ArrayList<Tile>();
+		ArrayList<Tile> roatedTileList = new ArrayList<Tile>();
 		int tileNumber = tilesList.size();
+		
+		boolean enabledRotation = true;
+		boolean enabledReflection = true;
+		
+//		boolean enabledRotation = false;
+//		boolean enabledReflection = false;
+
+//		boolean enabledRotation = true;
+//		boolean enabledReflection = false;
+//		boolean enabledRotation = false;
+//		boolean enabledReflection = true;
+		System.out.println("Rotation: " + enabledRotation + " Reflection: " + enabledReflection);
+
 		for(int i=0; i < tileNumber; i++){
 			// Standize tiles in the list and set id
 			tilesList.get(i).standize();
 			tilesList.get(i).setId(i);
+		
+			if(enabledRotation){
+			  for(int rotateDirection: ROTATION){
+				 if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(rotateDirection))){
+				  transformedTileList.add(tilesList.get(i).rotateTile(rotateDirection));
+				  roatedTileList.add(tilesList.get(i).rotateTile(rotateDirection));
+				 }
+			  }
+			}
+			if(enabledReflection){
+			 if(roatedTileList != null){
+				for (Tile roatedTile : roatedTileList){
+					  for(int reflectDirection: REFLECTION){
+							 if (! roatedTile.equals(roatedTile.reflectTile(reflectDirection))
+									 && ! tilesList.get(i).equals(roatedTile.reflectTile(reflectDirection))){
+								 transformedTileList.add(roatedTile.reflectTile(reflectDirection));
+							  } 
+							}	
+					
+				}
+			 }	
 			
-			rotatedTileList.add(tilesList.get(i));
-			
-		// Enable Rotation	
-			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE90))){
-				rotatedTileList.add(tilesList.get(i).rotateTile(DEGREE90));
-			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE90));
-			}
-			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE180))){
-				rotatedTileList.add(tilesList. get(i).rotateTile(DEGREE180));
-			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE180));
-			}
-			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE270))){
-				rotatedTileList.add(tilesList.get(i).rotateTile(DEGREE270));
-			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE270));
-			}
-		 // Enable Reflection
-			
-			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnX)) 
-					&& ! this.contains(oneRotatedTileList, tilesList.get(i).reflectTile(RlectionOnX))){
-				rotatedTileList.add(tilesList.get(i).reflectTile(RlectionOnX));
-			}
-			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnY)) 
-					&& ! this.contains(oneRotatedTileList, tilesList.get(i).reflectTile(RlectionOnX))){
-				rotatedTileList.add(tilesList.get(i).reflectTile(RlectionOnY));
+				  for(int reflectDirection: REFLECTION){
+				 if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(reflectDirection))){
+					  transformedTileList.add(tilesList.get(i).reflectTile(reflectDirection));
+				  } 
+				}			
 			}
 			
+			int len = transformedTileList.size();
+			for(int j=0; j < len; j++){
+				if(! this.contains(uniqueTransformedTileList, transformedTileList.get(j))){
+					uniqueTransformedTileList.add(transformedTileList.get(j));
+					AllTransformedTileList.add(transformedTileList.get(j).copy());
+				}	
+			 }
+			//clear the tile list on last iteration
+			transformedTileList.clear();
+			uniqueTransformedTileList.clear();
+			roatedTileList.clear();
+		}			
+		
+		for (Tile oneTile: AllTransformedTileList){
+				tilesList.add(oneTile);
+		}
+//		// Enable Rotation	
+//			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE90))){
+//				rotatedTileList.add(tilesList.get(i).rotateTile(DEGREE90));
+//			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE90));
+//			}
+//			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE180))){
+//				rotatedTileList.add(tilesList. get(i).rotateTile(DEGREE180));
+//			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE180));
+//			}
+//			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE270))){
+//				rotatedTileList.add(tilesList.get(i).rotateTile(DEGREE270));
+//			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE270));
+//			}
+//		 // Enable Reflection
+//			
+//			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnX)) 
+//					&& ! this.contains(oneRotatedTileList, tilesList.get(i).reflectTile(RlectionOnX))){
+//				rotatedTileList.add(tilesList.get(i).reflectTile(RlectionOnX));
+//			}
+//			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnY)) 
+//					&& ! this.contains(oneRotatedTileList, tilesList.get(i).reflectTile(RlectionOnX))){
+//				rotatedTileList.add(tilesList.get(i).reflectTile(RlectionOnY));
+//			}
+//			
+//		}
+		
+		tiles = new Tile[tilesList.size()];	
+		for(int i=0; i < tilesList.size(); i++){			
+			tiles[i] = tilesList.get(i);
 		}
 		
-		tiles = new Tile[rotatedTileList.size()];	
-		for(int i=0; i < rotatedTileList.size(); i++){			
-			tiles[i] = rotatedTileList.get(i);
-		}
-		
-		System.out.println("Tile Number:" + rotatedTileList.size());
+		System.out.println("Tile Number:" + tilesList.size());
 		// tiles[0].printTile();
 		
 		
