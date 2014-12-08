@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
+
 
 public class Puzzle {
 	
@@ -18,8 +20,23 @@ public class Puzzle {
 	public static final int[] ROTATION = {DEGREE90, DEGREE180, DEGREE270};
 	public static final int[] REFLECTION = {ReflectionOnX, ReflectionOnY};
 	
+	public int[][] solution;
+	public ArrayList<int[][]> solutions = new ArrayList<int[][]>();
+	public int solutionSize;
+	
+	ToMatrix mat;
+	
+	// Puzzle's head in doubled link
+	Node head = new Node(-1);
+	Solver solver;
+	
 	private PuzzleBoard board;
 	private Tile[] tiles;
+	private ArrayList<Tile> tilesList;
+	
+	public Tile[] originalTiles;
+	Tile maxTile;
+	int tileNumber; // the number of originial tiles
 	public void parse(String path) throws IOException {
 		parse(new FileInputStream(new File(path)));
 		
@@ -44,21 +61,37 @@ public class Puzzle {
 		DivideToTiles toTiles = new DivideToTiles(fullInput);
 		toTiles.parse();
 		//Get the biggest tile in the board and then add as target
-		ArrayList<Tile> tilesList = toTiles.getTiles();
+		this.tilesList = toTiles.getTiles();
 		tilesList.remove(toTiles.getMaxTile());
-		//add it as board
-		board = new PuzzleBoard(0, toTiles.getMaxTile());
+		tileNumber = tilesList.size();
+		originalTiles = new Tile[tileNumber];
+		for(int i=0; i< tileNumber; i++){
+			tilesList.get(i).standize();
+			tilesList.get(i).setId(i);
+			originalTiles[i] = tilesList.get(i);
+			
+		}
+		//Get the biggest tile as board
+		// Assign the tile as max tile
+		maxTile = toTiles.getMaxTile();
+		maxTile.standize();
+		board = new PuzzleBoard(0, maxTile);
 		
 		
-		// Rotated Tiles from one Tile
+	}
+
+	public void solver(boolean enabledOneSolution, boolean enabledRotation, boolean enabledReflection, IMonitor monitor){
+		// Initilize the class variable
+		this.initilization();
+			
 		ArrayList<Tile> transformedTileList = new ArrayList<Tile>();
 		ArrayList<Tile> uniqueTransformedTileList = new ArrayList<Tile>();
 		ArrayList<Tile> AllTransformedTileList = new ArrayList<Tile>();
 		ArrayList<Tile> roatedTileList = new ArrayList<Tile>();
-		int tileNumber = tilesList.size();
+
 		
-		boolean enabledRotation = true;
-		boolean enabledReflection = true;
+//		boolean enabledRotation = true;
+//		boolean enabledReflection = true;
 		
 //		boolean enabledRotation = false;
 //		boolean enabledReflection = false;
@@ -68,11 +101,11 @@ public class Puzzle {
 //		boolean enabledRotation = false;
 //		boolean enabledReflection = true;
 		System.out.println("Rotation: " + enabledRotation + " Reflection: " + enabledReflection);
-
+        
+		long startTime = System.currentTimeMillis();
+		
 		for(int i=0; i < tileNumber; i++){
 			// Standize tiles in the list and set id
-			tilesList.get(i).standize();
-			tilesList.get(i).setId(i);
 		
 			if(enabledRotation){
 			  for(int rotateDirection: ROTATION){
@@ -118,31 +151,6 @@ public class Puzzle {
 		for (Tile oneTile: AllTransformedTileList){
 				tilesList.add(oneTile);
 		}
-//		// Enable Rotation	
-//			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE90))){
-//				rotatedTileList.add(tilesList.get(i).rotateTile(DEGREE90));
-//			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE90));
-//			}
-//			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE180))){
-//				rotatedTileList.add(tilesList. get(i).rotateTile(DEGREE180));
-//			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE180));
-//			}
-//			if (! tilesList.get(i).equals(tilesList.get(i).rotateTile(DEGREE270))){
-//				rotatedTileList.add(tilesList.get(i).rotateTile(DEGREE270));
-//			    oneRotatedTileList.add(tilesList.get(i).rotateTile(DEGREE270));
-//			}
-//		 // Enable Reflection
-//			
-//			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnX)) 
-//					&& ! this.contains(oneRotatedTileList, tilesList.get(i).reflectTile(RlectionOnX))){
-//				rotatedTileList.add(tilesList.get(i).reflectTile(RlectionOnX));
-//			}
-//			if (! tilesList.get(i).equals(tilesList.get(i).reflectTile(RlectionOnY)) 
-//					&& ! this.contains(oneRotatedTileList, tilesList.get(i).reflectTile(RlectionOnX))){
-//				rotatedTileList.add(tilesList.get(i).reflectTile(RlectionOnY));
-//			}
-//			
-//		}
 		
 		tiles = new Tile[tilesList.size()];	
 		for(int i=0; i < tilesList.size(); i++){			
@@ -154,12 +162,9 @@ public class Puzzle {
 		
 		
 		// Set head's id as -1
-		Node head = new Node(-1);
-//		Node leftColumnNode;
-//		Node rightColumnNode;
 		Node lastColumnNode = new Node(-1);
 		// get Matrix
-		ToMatrix mat = new ToMatrix(board, tiles, tileNumber);
+		mat = new ToMatrix(board, tiles, tileNumber);
 		
 		
 		for(int c = 0; c < mat.matrixColumnNumber; c++){
@@ -251,17 +256,23 @@ public class Puzzle {
 //		System.out.println("Print unchanged list: ");
 //		printNet(head);
 //		Node column = head.getRight();
-		Solver solver =  new Solver(head);
-		solver.printSolution();
+		solver =  new Solver(head, monitor, board, mat, this);
+		this.transformSolution();
+		
+//		for(int j=0; j < solutionSize; j++){
+//		   OnProgress(IMonitor.NEW_SOL);
+//		}
+		//solver.printSolution();
 //		System.out.println("Print list after covering the first column: ");
 //		printNet(head);
 //		solver.uncover(column);
 //		System.out.println("Print list after uncovering the first column: ");
 //		printNet(head);
-		
-		
+		this.totalTime = System.currentTimeMillis() - startTime;
+	
 	}
-//	
+	
+	
 	public Node getNode(int r, int c, Node head, boolean[][] matrix){
 		// get the column node
 		Node columnNode = getColumnNode(c, head, RIGHT);
@@ -341,6 +352,73 @@ public class Puzzle {
 			}
 		}
 		return false;
+	}
+	
+	public Tile[] getTiles() {
+//		Tile[] originalTiles = new Tile[this.tilesList.size()];
+//		for(int i=0; i< this.tilesList.size(); i++){
+//			originalTiles[i] = tilesList.get(i);
+//		}
+		return this.originalTiles;
+	}
+	public PuzzleBoard getBoard(){
+		return this.board;
+	}
+	public Tile getMaxTile(){
+		return this.maxTile;
+	}
+	
+	// transform the solution from boolean array to readable board
+	public void transformSolution(){
+        this.solutionSize = this.solver.solutions.size();
+		
+		for(ArrayList<Node> oneSolution: this.solver.solutions ){		
+			solution = new int[board.height()][board.width()];
+			for(int i=0; i< oneSolution.size();i++){
+				solution = putTileRowInBoard(i , mat.matrix[oneSolution.get(i).rowId],solution);
+			}
+			solutions.add(solution);
+		}
+	}
+	
+	// return the solutions
+	public ArrayList<int[][]> getSolutions(){
+		return this.solutions;
+	}
+	// put one Tile row into the board for drawing
+	public int[][] putTileRowInBoard(int id, boolean[] row, int[][] drawBoard ){
+		int count = 0; 
+		for(int i=0; i<board.height; i++) {
+			for(int j=0;  j< board.width; j++) {
+				if(board.board[i][j].c != Tile.BLANK && row[count + tileNumber ]){
+					drawBoard[i][j] = id;
+					count++;
+				}
+			}
+		}	
+		return drawBoard;	
+	}
+	
+	long totalTime = 0;
+	long deadEndTime = 0;
+
+	public long getTotalTime() {
+		return totalTime;
+	}
+	
+
+	
+	public void initilization(){
+		solutions.clear();
+		solutionSize=0;
+		// Puzzle's head in doubled link
+		head = new Node(-1);
+		tilesList.clear();
+		
+		for(Tile tile: originalTiles){
+			tilesList.add(tile);
+		}
+	
 	}
    
 }

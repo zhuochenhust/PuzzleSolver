@@ -1,11 +1,24 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Solver {
     Node head;
+    PuzzleBoard board;
+    public static Puzzle puzzle;
     ArrayList<ArrayList<Node>> solutions = new ArrayList<ArrayList<Node>>();
-	public Solver(Node head){
+	public int[][] solution;
+	public ArrayList<int[][]> arraySolutions = new ArrayList<int[][]>();
+	
+	ToMatrix mat;
+	public Solver(Node head,IMonitor monitor,PuzzleBoard board, ToMatrix mat, Puzzle puzzle){
 		this.head = head;
+		this.board = board;
+		this.mat = mat;
+		this.puzzle = puzzle;
+		this.addMonitor(monitor);
 		this.solvePuzzle();
+//		this.removeMonitor(monitor);
+		
 	}
 	
 	
@@ -29,6 +42,9 @@ public class Solver {
 		    	anotherSolution.add(solution.get(i));
 		    }
 			solutions.add(anotherSolution);
+			// transform one solution into readable format array
+			transformSolution(anotherSolution);
+			this.OnProgress(IMonitor.NEW_SOL);
 		    //printSolution();
 			return;
 		} else { 
@@ -44,6 +60,9 @@ public class Solver {
 				    	oneSolution.add(solution.get(i));
 				    }
 					solutions.add(oneSolution);
+					// transform one solution into readable format array
+					transformSolution(oneSolution);  
+					this.OnProgress(IMonitor.NEW_SOL);
 					//printSolution();
 					return;
 			 }
@@ -321,6 +340,48 @@ public void unCoverRow(Node columnNode){
 			columnNode = columnNode.getRight();
 		}
 		return false;
+	}
+	
+	// Monitor System
+	private HashSet<IMonitor> monitors = new HashSet<IMonitor>();
+
+	public void addMonitor(IMonitor monitor) {
+		if (monitor != null)
+			monitors.add(monitor);
+	}
+
+	public void removeMonitor(IMonitor monitor) {
+		if (monitor != null)
+			monitors.remove(monitor);
+	}
+
+	protected void OnProgress(int event) {
+		for (IMonitor monitor : monitors) {
+			monitor.update(event);
+		}
+	}
+	// transform node array list to array solution
+	public void transformSolution(ArrayList<Node> nodeSolution){
+//        this.solutionSize = this.solutions.size();
+			
+			solution = new int[board.height()][board.width()];
+			for(int i=0; i< nodeSolution.size();i++){
+				solution = putTileRowInBoard(i , mat.matrix[nodeSolution.get(i).rowId],solution);
+			}
+			arraySolutions.add(solution);
+	}
+	
+	public int[][] putTileRowInBoard(int id, boolean[] row, int[][] drawBoard ){
+		int count = 0; 
+		for(int i=0; i<board.height; i++) {
+			for(int j=0;  j< board.width; j++) {
+				if(board.board[i][j].c != Tile.BLANK && row[count + puzzle.tileNumber ]){
+					drawBoard[i][j] = id;
+					count++;
+				}
+			}
+		}	
+		return drawBoard;	
 	}
 	
 

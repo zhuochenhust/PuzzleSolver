@@ -9,7 +9,7 @@ public class Node {
 	int nodeNumber;
 	int columnId; 
 	int rowId;
-
+	
 
 	
 //	Node columnNode

@@ -26,7 +26,10 @@ public class Tile {
 		this.id = id;
 	}
 	   
-
+	public int getId(){
+		return this.id;
+	}
+	
 	public int getLeft() {
 		return left;
 	}
@@ -72,16 +75,33 @@ public class Tile {
 		cells.add(new Cell(x, y, ch));
    }
 
-//	private char[][] getData() {
-//		char[][] data = new char[height()][width()];
-//		for (int i = data.length; i-- > 0;)
-//			for (int j = data[i].length; j-- > 0;)
-//				data[i][j] = BLANK;
+	public char[][] getCharBoard() {
+		char[][] data = new char[height()][width()];
+		for (int i = data.length; i-- > 0;)
+			for (int j = data[i].length; j-- > 0;)
+				data[i][j] = BLANK;
 //		for (Cell p : cells) {
 //			data[p.y - top][p.x - left] = p.c;
 //		}
-//		return data;
-//	}
+		for (Cell p : cells) {
+			data[p.y][p.x] = p.c;
+		}
+		return data;
+	}
+	
+	public int[][] getColorBoard() {
+		int[][] colorBoard = new int[height()][width()];
+		char[][] charBoard = this.getCharBoard();
+		for (int i = colorBoard.length; i-- > 0;){
+			for (int j = colorBoard[i].length; j-- > 0;)
+				if(charBoard[i][j] != BLANK) {
+					// let color board assign with the color id
+					colorBoard[i][j] = this.id + 1;
+				}
+		}
+		
+		return colorBoard;
+	}
 //
 //	public void print() {
 //		char[][] data = getData();

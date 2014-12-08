@@ -1,9 +1,9 @@
 public class PuzzleBoard extends Tile {
 	Cell[][] board;
 	boolean[][] boardstatus;
-	private int size;
-	private int width;
-	private int height;
+	public int size;
+	public int width;
+	public int height;
 
 	public PuzzleBoard (int id, Tile tile) {
 		this.id = id;
@@ -17,7 +17,7 @@ public class PuzzleBoard extends Tile {
 		
 		// put cells from tile into array board
 		for (Cell c: tile.cells) {
-			board[c.getY()- tile.getTop()][c.getX() - tile.getLeft()] = c;		
+			board[c.getY()][c.getX()] = c;		
 		}
 		
 		// put empty space with a empty blank in array board
