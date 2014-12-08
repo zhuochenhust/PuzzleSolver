@@ -4,17 +4,17 @@ import java.util.HashSet;
 public class Solver {
     Node head;
     PuzzleBoard board;
-    public static Puzzle puzzle;
+    public  int tileNumber;
     ArrayList<ArrayList<Node>> solutions = new ArrayList<ArrayList<Node>>();
 	public int[][] solution;
 	public ArrayList<int[][]> arraySolutions = new ArrayList<int[][]>();
 	
 	ToMatrix mat;
-	public Solver(Node head,IMonitor monitor,PuzzleBoard board, ToMatrix mat, Puzzle puzzle){
+	public Solver(Node head,IMonitor monitor,PuzzleBoard board, ToMatrix mat, int tileNumber){
 		this.head = head;
 		this.board = board;
 		this.mat = mat;
-		this.puzzle = puzzle;
+		this.tileNumber = tileNumber;
 		this.addMonitor(monitor);
 		this.solvePuzzle();
 //		this.removeMonitor(monitor);
@@ -357,7 +357,7 @@ public void unCoverRow(Node columnNode){
 
 	protected void OnProgress(int event) {
 		for (IMonitor monitor : monitors) {
-			monitor.update(event);
+			//monitor.update(event);
 		}
 	}
 	// transform node array list to array solution
@@ -375,7 +375,7 @@ public void unCoverRow(Node columnNode){
 		int count = 0; 
 		for(int i=0; i<board.height; i++) {
 			for(int j=0;  j< board.width; j++) {
-				if(board.board[i][j].c != Tile.BLANK && row[count + puzzle.tileNumber ]){
+				if(board.board[i][j].c != Tile.BLANK && row[count + tileNumber ]){
 					drawBoard[i][j] = id;
 					count++;
 				}

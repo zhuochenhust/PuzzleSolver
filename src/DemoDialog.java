@@ -395,7 +395,7 @@ public class DemoDialog extends Dialog implements IMonitor{
 							tileComposite.dispose();
 							tileComposite = null;
 						}
-						System.out.println("Solution Size: " + puzzle.getSolutions().size());
+						System.out.println("Solution Size: " + puzzle.solver.arraySolutions.size());
 						if(puzzle.solver.arraySolutions.size() != 0){
 						      tileComposite = new TileComposite(pieceContainer,
 								SWT.NULL, puzzle.maxTile, EnabledColor, puzzle.solver.arraySolutions.get(curSol));

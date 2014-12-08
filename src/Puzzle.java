@@ -256,7 +256,7 @@ public class Puzzle {
 //		System.out.println("Print unchanged list: ");
 //		printNet(head);
 //		Node column = head.getRight();
-		solver =  new Solver(head, monitor, board, mat, this);
+		solver =  new Solver(head, monitor, board, mat, tileNumber);
 		this.transformSolution();
 		
 //		for(int j=0; j < solutionSize; j++){
