@@ -216,7 +216,7 @@ public class DemoDialog extends Dialog implements IMonitor{
 						public void run() {
 							puzzle.solver(singleSolution, useRotation,
 											useReflection, monitor);
-
+							
 							display.syncExec(new Runnable() {
 								@Override
 								public void run() {
@@ -232,6 +232,42 @@ public class DemoDialog extends Dialog implements IMonitor{
 					};
 					solverThread.setDaemon(true);
 					solverThread.start();
+                 while(1 == 1){
+					if (solverThread.getState() != Thread.State.RUNNABLE){
+						if (curSol == -1) {
+							curSol++;
+							System.out.println("curSol: " + curSol );
+							
+
+							if (tileComposite != null) {
+								tileComposite.dispose();
+								tileComposite = null;
+							}
+//							System.out.println("Solution Size: " + puzzle.solver.arraySolutions.size());
+//							if(puzzle.solver.arraySolutions.size() != 0){
+//							      tileComposite = new TileComposite(pieceContainer,
+//									SWT.NULL, puzzle.maxTile, EnabledColor, puzzle.solver.arraySolutions.get(curSol));
+//							
+//							       tileComposite.pack();
+//							}
+							System.out.println("Solution Size: " + puzzle.getSolutions().size());
+							if(puzzle.getSolutions().size() != 0){
+							      tileComposite = new TileComposite(pieceContainer,
+									SWT.NULL, puzzle.maxTile, EnabledColor, puzzle.getSolutions().get(curSol));
+							
+							       tileComposite.pack();
+							}
+							pieceContainer.pack();
+							pieceItem[2].setHeight(solContainer.computeSize(
+									SWT.DEFAULT, SWT.DEFAULT).y);
+						}
+						prevButton.setEnabled(puzzle.solutionSize > 0);
+						nextButton.setEnabled(curSol < puzzle.solutionSize - 1);
+						solLabel.setText(String.format("Solution %s of %s",
+								(curSol + 1), puzzle.solutionSize));
+						break;
+					}
+				}
 				}
 			});
 		}
@@ -351,9 +387,9 @@ public class DemoDialog extends Dialog implements IMonitor{
 							SWT.DEFAULT).y);
 
 					prevButton.setEnabled(curSol > 0);
-					nextButton.setEnabled(curSol < solCount - 1);
+					nextButton.setEnabled(curSol < puzzle.solutionSize - 1);
 					solLabel.setText(String.format("Solution %s of %s",
-							(curSol + 1), solCount));
+							(curSol + 1), puzzle.solutionSize));
 				}
 			});
 
@@ -374,9 +410,9 @@ public class DemoDialog extends Dialog implements IMonitor{
 							SWT.DEFAULT).y);
 
 					prevButton.setEnabled(curSol > 0);
-					nextButton.setEnabled(curSol < solCount - 1);
+					nextButton.setEnabled(curSol < puzzle.solutionSize - 1);
 					solLabel.setText(String.format("Solution %s of %s",
-							(curSol + 1), solCount));
+							(curSol + 1), puzzle.solutionSize));
 				}
 			});
 		}  
@@ -389,19 +425,27 @@ public class DemoDialog extends Dialog implements IMonitor{
 					solCount++;
 					if (curSol == -1) {
 						curSol++;
-						System.out.println("curSol: " + curSol);
+						System.out.println("curSol: " + curSol );
+						
 
 						if (tileComposite != null) {
 							tileComposite.dispose();
 							tileComposite = null;
 						}
-						System.out.println("Solution Size: " + puzzle.solver.arraySolutions.size());
-						if(puzzle.solver.arraySolutions.size() != 0){
-						      tileComposite = new TileComposite(pieceContainer,
-								SWT.NULL, puzzle.maxTile, EnabledColor, puzzle.solver.arraySolutions.get(curSol));
-						
-						       tileComposite.pack();
-						}
+//						System.out.println("Solution Size: " + puzzle.solver.arraySolutions.size());
+//						if(puzzle.solver.arraySolutions.size() != 0){
+//						      tileComposite = new TileComposite(pieceContainer,
+//								SWT.NULL, puzzle.maxTile, EnabledColor, puzzle.solver.arraySolutions.get(curSol));
+//						
+//						       tileComposite.pack();
+//						}
+//						System.out.println("Solution Size: " + puzzle.getSolutions().size());
+//						if(puzzle.getSolutions().size() != 0){
+//						      tileComposite = new TileComposite(pieceContainer,
+//								SWT.NULL, puzzle.maxTile, EnabledColor, puzzle.getSolutions().get(curSol));
+//						
+//						       tileComposite.pack();
+//						}
 						pieceContainer.pack();
 						pieceItem[2].setHeight(solContainer.computeSize(
 								SWT.DEFAULT, SWT.DEFAULT).y);

@@ -17,6 +17,7 @@ public class Solver {
 		this.tileNumber = tileNumber;
 		this.addMonitor(monitor);
 		this.solvePuzzle();
+		//monitor.update(IMonitor.NEW_SOL);
 //		this.removeMonitor(monitor);
 		
 	}

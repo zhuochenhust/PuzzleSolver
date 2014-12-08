@@ -390,11 +390,15 @@ public class Puzzle {
 		int count = 0; 
 		for(int i=0; i<board.height; i++) {
 			for(int j=0;  j< board.width; j++) {
-				if(board.board[i][j].c != Tile.BLANK && row[count + tileNumber ]){
-					drawBoard[i][j] = id;
+//				boolean a = board.board[i][j].c != Tile.BLANK;
+//				boolean b = row[count + tileNumber ];
+				if(board.board[i][j].c != Tile.BLANK){
+					if(row[count + tileNumber ]){
+						drawBoard[i][j] = id + 1;
+					}
 					count++;
 				}
-			}
+		    }
 		}	
 		return drawBoard;	
 	}
