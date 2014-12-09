@@ -261,7 +261,7 @@ public class DemoDialog extends Dialog implements IMonitor{
 							pieceItem[2].setHeight(solContainer.computeSize(
 									SWT.DEFAULT, SWT.DEFAULT).y);
 						}
-						prevButton.setEnabled(puzzle.solutionSize > 0);
+						prevButton.setEnabled(false); // at the beginning, disable previous button
 						nextButton.setEnabled(curSol < puzzle.solutionSize - 1);
 						solLabel.setText(String.format("Solution %s of %s",
 								(curSol + 1), puzzle.solutionSize));
@@ -292,7 +292,8 @@ public class DemoDialog extends Dialog implements IMonitor{
 		private void createBoardItem() {
 			createExpandItem(1, "Board", puzzle.getMaxTile());
 		}
-
+		
+		private Label eiLabel;
 		private void createExpandItem(int index, String title, Tile... tiles) {
 			ScrolledComposite sc = new ScrolledComposite(pieceBar, SWT.H_SCROLL
 					| SWT.V_SCROLL);
@@ -308,6 +309,13 @@ public class DemoDialog extends Dialog implements IMonitor{
 			layout = new GridLayout();
 			layout.numColumns = tiles.length;
 			container.setLayout(layout);
+
+//			eiLabel = new Label(wrapper, SWT.NULL);
+//			eiLabel.setAlignment(SWT.CENTER);
+//			GridData gd = new GridData(GridData.FILL, GridData.CENTER, true, false);
+//			gd.widthHint = 100;
+//			solLabel.setLayoutData(gd);
+
 			for (Tile tile : tiles) {
 				new TileComposite(container, SWT.NULL, tile, EnabledColor, tile.getColorBoard());
 			}
